@@ -2,7 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { Navbar, Nav, Button, NavDropdown } from 'react-bootstrap';
 
 const AppBar = () => {
@@ -26,33 +26,34 @@ const AppBar = () => {
           setRole(data.user.type);
         } else setIsLoggedIn(false)
       } catch (e) {
+        console.error(e)
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         setIsLoggedIn(false);
       }
     } else setIsLoggedIn(false);
-  }, []);
+  }, [localStorage.getItem('token')]);
 
   return (
     <Navbar bg="primary" expand="lg" variant="dark">
-      <Navbar.Brand className="mx-3" href="/">
+      <Navbar.Brand style={{ cursor: "pointer" }} className="mx-3" onClick={() => navigate("/")}>
         My university
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="navbarNav" />
       <Navbar.Collapse id="navbarNav" className='mx-3'>
         <Nav className="ml-auto">
-          {isLoggedIn && role != 'admin'&& role != 'rector' && (
-            <Nav.Link href="/" className="my-3">
+          {isLoggedIn && (
+            <Nav.Link onClick={() => navigate("/")} className="my-3">
               Home
             </Nav.Link>
           )}
-         {isLoggedIn && role === 'rector' && (
-            <Nav.Link href="/studenti-statistici" className="my-3 bg-primary primary">
-              Statistici
+          {isLoggedIn && role === 'teacher' && (
+            <Nav.Link onClick={() => navigate("/activities")} className="my-3 bg-primary primary">
+              Activities
             </Nav.Link>
           )}
-           {!isLoggedIn && (
-            <Nav.Link href="/login" className="ml-lg-0 ml-3">
+          {!isLoggedIn && (
+            <Nav.Link onClick={() => navigate("/login")} className="ml-lg-0 ml-3">
               <Button variant="outline-info">Log in</Button>
             </Nav.Link>
           )}

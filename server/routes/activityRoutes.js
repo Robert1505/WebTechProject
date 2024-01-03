@@ -21,16 +21,12 @@ app.get('/', async (request, response, next) => {
 // GET the list of activities posted by logged user
 app.get('/users/:userId', authenticationMiddleware, async (req, response, next) => {
     try {
-        if (req.userType === 'teacher' && req.userId == req.params.userId) {
+        if (req.type === 'teacher' && req.userId == req.params.userId) {
             const user = await User.findByPk(req.params.userId);
             if (user) {
                 if (user.type == 'teacher') {
                     const activities = await user.getActivities();
-                    if (activities.length > 0) {
-                        response.json(activities);
-                    } else {
-                        response.sendStatus(204);
-                    }
+                      response.status(200).json(activities);
                 } else response.status(400).json({ message: 'User must be a professor!' });
             } else {
                 response.status(404).json({ message: 'User not found!' });
@@ -45,7 +41,7 @@ app.get('/users/:userId', authenticationMiddleware, async (req, response, next) 
 // GET the list of enrolled activities of a student
 app.get('/users/:userId/enrollment', authenticationMiddleware, async (req, response, next) => {
     try {
-        if (req.userType == 'student' && req.userId == req.params.userId) {
+        if (req.type == 'student' && req.userId == req.params.userId) {
             console.log(req.params.userId + ' ' + req.userId)
             const user = await User.findByPk(req.params.userId);
             if (user) {
@@ -119,7 +115,7 @@ app.post('/:userId', authenticationMiddleware, async (req, response, next) => {
 // PUT to update an activity.
 app.put('/:activityId', authenticationMiddleware, async (request, response, next) => {
     try {
-        if (request.userType == 'teacher') {
+        if (request.type == 'teacher') {
             const activity = await Activity.findByPk(request.params.activityId);
             if (activity && activity.teacher == request.userId) {
                 if (request.body.description && request.body.code && request.body.date) {
@@ -144,7 +140,7 @@ app.put('/:activityId', authenticationMiddleware, async (request, response, next
 // DELETE an activity.
 app.delete('/:activityId', authenticationMiddleware, async (request, response, next) => {
     try {
-        if (request.userType == 'teacher') {
+        if (request.type == 'teacher') {
             const activity = await Activity.findByPk(request.params.activityId);
             if (activity) {
                 if (activity.teacher == request.userId) {

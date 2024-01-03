@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import AppBar from './pages/AppBar';
+import AddActivity from './pages/AddActivity';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState();
@@ -19,7 +20,6 @@ function App() {
         localStorage.removeItem('token');
       }
     }
-    setIsLoggedIn(localStorage.getItem('token') !== null);
   }, []);
 
   return (
@@ -29,6 +29,7 @@ function App() {
         {/* Home */}
         <Route path="/" element={isLoggedIn ? <Home /> : <Login />} />
         <Route path="/home" element={isLoggedIn ? <Home /> : <Login />} />
+        <Route path="/activities" element={<AddActivity />} />
 
         {/* Auth */}
         <Route path="login" element={<Login />} />

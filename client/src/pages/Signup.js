@@ -61,22 +61,22 @@ const Signup = () => {
                                 <form>
                                     <div className="form-group">
                                         <label>First name:</label>
-                                        <input value={firstName} onChange={e => setFirstName(e.target.value)}
+                                        <input value={firstName} onChange={e => setFirstName(e.target.value)} required
                                         type="text" name="firstName" className="form-control" />
                                     </div>
                                     <div className="form-group">
                                         <label>Last name:</label>
-                                        <input value={lastName} onChange={e => setLastName(e.target.value)}
+                                        <input value={lastName} onChange={e => setLastName(e.target.value)} required
                                         type="text" name="lastName" className="form-control" />
                                     </div>
                                     <div className="form-group">
                                         <label>Username:</label>
-                                        <input value={userName} onChange={e => setUserName(e.target.value)}
+                                        <input value={userName} onChange={e => setUserName(e.target.value)} required
                                         type="email" name="numeUtilizator" className="form-control" />
                                     </div>
                                     <div className="form-group">
                                         <label>Password:</label>
-                                        <input value={password} onChange={e => setPassword(e.target.value)} 
+                                        <input value={password} onChange={e => setPassword(e.target.value)}  required
                                         type="password" name="parola" className="form-control" />
                                     </div>
                                     <button type="button" onClick={insertUser} className="btn btn-primary">

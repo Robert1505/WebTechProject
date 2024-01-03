@@ -16,7 +16,7 @@ const Login = () => {
             try {
                 jwtDecode(token);
                 setIsLoggedIn(true);
-                navigate('/home');
+                navigate("/home");
             } catch (e) {
                 localStorage.removeItem('token');
             }
@@ -41,7 +41,7 @@ const Login = () => {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user))
                 localStorage.setItem('type', data.user.type)
-                navigate("/");
+                navigate("/home");
             }
         } else {
             console.error('' + data.message)
@@ -61,11 +61,11 @@ const Login = () => {
                             <form>
                                 <div className="form-group">
                                     <label htmlFor="email">Username:</label>
-                                    <input value={userName} onChange={e => setUserName(e.target.value)} type="text" name="userName" className="form-control" />
+                                    <input required value={userName} onChange={e => setUserName(e.target.value)} type="text" name="userName" className="form-control" />
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="password">Password:</label>
-                                    <input value={password} onChange={e => setPassword(e.target.value)} type="password" name="password" className="form-control" />
+                                    <input required value={password} onChange={e => setPassword(e.target.value)} type="password" name="password" className="form-control" />
                                 </div>
                                 <div className="form-group">
                                     <button onClick={handleSubmit} type="button" className="btn btn-primary m-3">Login</button>
