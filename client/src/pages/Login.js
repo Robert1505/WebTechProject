@@ -44,7 +44,8 @@ const Login = () => {
                 navigate("/home");
             }
         } else {
-            console.error('' + data.message)
+            console.error('' + data.error)
+            alert(data.error)
         }
 
 
@@ -58,7 +59,7 @@ const Login = () => {
                     <div className="card">
                         <div className="card-body">
                             <h2 className="card-title">Login</h2>
-                            <form>
+                            <div>
                                 <div className="form-group">
                                     <label htmlFor="email">Username:</label>
                                     <input required value={userName} onChange={e => setUserName(e.target.value)} type="text" name="userName" className="form-control" />
@@ -70,7 +71,7 @@ const Login = () => {
                                 <div className="form-group">
                                     <button onClick={handleSubmit} type="button" className="btn btn-primary m-3">Login</button>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>

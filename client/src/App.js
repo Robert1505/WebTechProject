@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import AppBar from './pages/AppBar';
 import AddActivity from './pages/AddActivity';
+import Enroll from './pages/Enroll';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState();
@@ -30,6 +31,7 @@ function App() {
         <Route path="/" element={isLoggedIn ? <Home /> : <Login />} />
         <Route path="/home" element={isLoggedIn ? <Home /> : <Login />} />
         <Route path="/activities" element={<AddActivity />} />
+        <Route path="/enroll" element={<Enroll />} />
 
         {/* Auth */}
         <Route path="login" element={<Login />} />

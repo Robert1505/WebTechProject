@@ -52,6 +52,11 @@ const AppBar = () => {
               Activities
             </Nav.Link>
           )}
+          {isLoggedIn && role === 'student' && (
+            <Nav.Link onClick={() => navigate("/enroll")} className="my-3 bg-primary primary">
+              Enroll
+            </Nav.Link>
+          )}
           {!isLoggedIn && (
             <Nav.Link onClick={() => navigate("/login")} className="ml-lg-0 ml-3">
               <Button variant="outline-info">Log in</Button>

@@ -89,9 +89,10 @@ app.post('/:userId', authenticationMiddleware, async (req, response, next) => {
             const user = await User.findByPk(req.params.userId);
             if (user) {
                 if (user.type == 'teacher') {
-                    if (req.body.description && req.body.code && req.body.date) {
+                    if (req.body.description &&req.body.title && req.body.code && req.body.date) {
                         const par = {
                             description: req.body.description,
+                            title: req.body.title,
                             code: req.body.code,
                             date: new Date(req.body.date),
                             teacher: req.params.userId
@@ -118,9 +119,10 @@ app.put('/:activityId', authenticationMiddleware, async (request, response, next
         if (request.type == 'teacher') {
             const activity = await Activity.findByPk(request.params.activityId);
             if (activity && activity.teacher == request.userId) {
-                if (request.body.description && request.body.code && request.body.date) {
+                if (request.body.description && req.body.title &&request.body.code && request.body.date) {
                     const par = {
                         description: req.body.description,
+                        title: req.body.title,
                         code: req.body.code,
                         date: new Date(req.body.date),
                         teacher: req.params.userId

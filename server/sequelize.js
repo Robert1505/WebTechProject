@@ -35,7 +35,7 @@ const User = sequelize.define('user', {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
-        validate: { isEmail: true, notEmpty: true, }
+        validate: { notEmpty: true, }
     },
     password: {
         type: DataTypes.STRING,
@@ -74,6 +74,11 @@ const Activity = sequelize.define('activity', {
         autoIncrement: true,
         primaryKey: true
     },
+    title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        notEmpty: true
+    },
     description: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -82,7 +87,8 @@ const Activity = sequelize.define('activity', {
     code: {
         type: DataTypes.STRING,
         allowNull: false,
-        notEmpty: true
+        notEmpty: true,
+        unique: true
     },
     date: {
         type: DataTypes.DATE,
