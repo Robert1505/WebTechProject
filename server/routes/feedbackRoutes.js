@@ -4,34 +4,15 @@ const { authenticationMiddleware } = require('./loginMiddleware');
 
 const { User, Activity, Feedback } = require('../sequelize');
 
-// GET the list of feedbacks, only if you are professor.
-app.get('/all', authenticationMiddleware, async (request, response, next) => {
-    try {
-        if (request.type == 'teacher') {
-            const activities = await Activity.findAll({ where: { creator: request.userId } });
-            const activity = activities.shift();
-            const feedbacks = await activity.getFeedbacks();
-            if (feedbacks.length > 0) {
-                response.json(feedbacks);
-            } else {
-                response.sendStatus(204);
-            }
-        }
-        else response.status(403).json({ message: 'Your are not the professor!' })
-    } catch (error) {
-        next(error);
-    }
-});
-
 // GET the list of all feedbacks of an activity if you are teacher, or only yours if you are student
 app.get('/activity/:activityId', authenticationMiddleware, async (request, response, next) => {
     try {
         let user = await User.findByPk(request.userId)
-        if(!user) response.status(404).json({ message: 'User not found!' })
+        if (!user) response.status(404).json({ message: 'User not found!' })
         const activity = await Activity.findByPk(request.params.activityId);
-        if(!activity) response.status(404).json({ message: 'Activity not found!' })
+        if (!activity) response.status(404).json({ message: 'Activity not found!' })
 
-        if(user.type === 'teacher'){
+        if (user.type === 'teacher') {
             const feedbacks = await activity.getFeedbacks();
             response.status(200).json(feedbacks);
         } else {
@@ -52,24 +33,7 @@ app.get('/activity/:activityId', authenticationMiddleware, async (request, respo
                 console.log("User or activity not found.");
             }
         }
-        
-    } catch (error) {
-        next(error);
-    }
-});
 
-// GET a feedback by id.
-app.get('/:feedbackId', authenticationMiddleware, async (request, response, next) => {
-    try {
-        if (request.type == 'teacher') {
-            const feedback = await Feedback.findByPk(request.params.feedbackId);
-            if (feedback) {
-                response.json(feedback);
-            } else {
-                response.status(404).json({ message: 'Feedback Not Found!' })
-            }
-        }
-        else response.status(403).json({ message: 'Your are not the professor!' })
     } catch (error) {
         next(error);
     }
@@ -100,38 +64,6 @@ app.post('/users/:userId/activities/:activityId', authenticationMiddleware, asyn
             } else response.status(404).json({ message: 'Student is not enrolled at such activity!' });
         } else {
             response.status(404).json({ message: 'User not found!' + user1.typeId + req.params.userId });
-        }
-    } catch (error) {
-        next(error);
-    }
-});
-
-// PUT to update a feedback.
-app.put('/:feedbackId', authenticationMiddleware, async (request, response, next) => {
-    try {
-        if (request.type == 'student') {
-            const feedback = await Feedback.findByPk(request.params.feedbackId);
-            if (feedback) {
-                if (request.body.type && request.body.date) {
-                    await feedback.update(request.body);
-                } else response.status(400).json({ message: 'Malformed request!' });
-            } else {
-                response.sendStatus(404);
-            }
-        } else response.status(403).json({ message: 'Your are not the student!' })
-    } catch (error) {
-        next(error);
-    }
-});
-
-// DELETE a feedback.
-app.delete('/:feedbackId', async (request, response, next) => {
-    try {
-        const feedback = await Feedback.findByPk(request.params.feedbackId);
-        if (feedback) {
-            await feedback.destroy();
-        } else {
-            response.sendStatus(404);
         }
     } catch (error) {
         next(error);

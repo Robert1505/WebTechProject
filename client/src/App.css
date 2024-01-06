@@ -1,42 +1,3 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .emoticon-container {
   display: flex;
   flex-direction: column;
@@ -56,13 +17,17 @@
   justify-content: center;
   align-items: center;
   margin-bottom: 1px;
-  border: 1px solid black; /* Add borders to separate col-6 */
-  transition: transform 0.3s, box-shadow 0.3s; /* Transition effect */
+  border: 1px solid black;
+  /* Add borders to separate col-6 */
+  transition: transform 0.3s, box-shadow 0.3s;
+  /* Transition effect */
 }
 
 .col-6:hover {
-  transform: scale(1.1); /* Increase scale on hover */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add shadow on hover */
+  transform: scale(1.1);
+  /* Increase scale on hover */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  /* Add shadow on hover */
 }
 
 .emoticon-button {
@@ -72,7 +37,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border: none; /* Remove button border */
-  background: none; /* Remove button background */
-  padding: 10px; /* Remove button padding */
+  border: none;
+  /* Remove button border */
+  background: none;
+  /* Remove button background */
+  padding: 10px;
+  /* Remove button padding */
 }

@@ -67,6 +67,7 @@ app.get('/users/:userId/enrollment', authenticationMiddleware, async (req, respo
         next(error);
     }
 });
+
 // GET an activity by id.
 app.get('/:activityId', authenticationMiddleware, async (request, response, next) => {
     try {
@@ -123,55 +124,6 @@ app.post('/:userId', authenticationMiddleware, async (req, response, next) => {
                 } else response.status(400).json({ message: 'User must be a professor!' });
             } else {
                 response.status(404).json({ message: 'User not found!' });
-            }
-        }
-        else response.status(403).json({ message: 'Your are not the professor!' })
-    } catch (error) {
-        next(error);
-    }
-});
-
-// PUT to update an activity.
-app.put('/:activityId', authenticationMiddleware, async (request, response, next) => {
-    try {
-        if (request.type == 'teacher') {
-            const activity = await Activity.findByPk(request.params.activityId);
-            if (activity && activity.teacher == request.userId) {
-                if (request.body.description && req.body.title && request.body.code && request.body.date) {
-                    const par = {
-                        description: req.body.description,
-                        title: req.body.title,
-                        code: req.body.code,
-                        date: new Date(req.body.date),
-                        teacher: req.params.userId
-                    };
-                    await activity.update(par);
-                } else response.status(400).json({ message: 'Malformed request!' });
-            } else {
-                response.sendStatus(404);
-            }
-        }
-        else response.status(403).json({ message: 'Your are not the professor!' })
-    } catch (error) {
-        next(error);
-    }
-});
-
-// DELETE an activity.
-app.delete('/:activityId', authenticationMiddleware, async (request, response, next) => {
-    try {
-        if (request.type == 'teacher') {
-            const activity = await Activity.findByPk(request.params.activityId);
-            if (activity) {
-                if (activity.teacher == request.userId) {
-                    await activity.destroy();
-                    response.status(200).json({ message: "Deleted!" });
-                } else {
-                    response.status(404).json({ message: 'Your are not the professor!' + request.userId + activity.teacher })
-                }
-            }
-            else {
-                response.status(404).json({ message: 'Activity not found!' })
             }
         }
         else response.status(403).json({ message: 'Your are not the professor!' })

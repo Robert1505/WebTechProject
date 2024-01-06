@@ -9,8 +9,6 @@ import smileyImg from './img/smiley.png'
 const Feedback = () => {
     const [feedbackInstances, setFeedbackInstances] = useState([]);
     const { id } = useParams();
-    const [user, setUser] = useState({});
-    const [refresh, setRefresh] = useState(false);
     const [activity, setActivity] = useState({});
     const navigate = useNavigate();
 
@@ -24,8 +22,8 @@ const Feedback = () => {
                 },
             });
             if (res.ok) {
-                const data = await res.json()
-                setActivity(data)
+                const data = await res.json();
+                setActivity(data);
             }
         };
 
@@ -36,16 +34,15 @@ const Feedback = () => {
                     'Authorization': localStorage.getItem("token")
                 },
             });
-            const data = await res.json()
+            const data = await res.json();
             if (res.ok) {
-                setFeedbackInstances(data)
+                setFeedbackInstances(data);
             }
         };
 
         if (token) {
             try {
                 const data = jwtDecode(token);
-                setUser(data.user);
                 if (data.type != "teacher") navigate("/home");
                 fetchActivity();
                 fetchFeedbacks();
@@ -54,7 +51,7 @@ const Feedback = () => {
                 navigate("/login");
             }
         }
-    }, [refresh]);
+    }, []);
 
     const returnEmoji = reaction => {
         if (reaction === 'smiley') {
@@ -71,31 +68,30 @@ const Feedback = () => {
         }
     }
 
-
     return (
         <div className='m-5'>
-        {/* Display Activity Details */}
-        <div className="card shadow-lg m-5">
-            <div className="card-body">
-                <h5 className="card-title">{activity.title}</h5>
-                <hr></hr>
-                <p className="card-text">Description: {activity.description}</p>
-                <p className="card-text">Code: {activity.code}</p>
-                <p className="card-text">Date: {new Date(activity.date).toLocaleDateString() + ", " + new Date(activity.date).toLocaleTimeString()}</p>
+            {/* Display Activity Details */}
+            <div className="card shadow-lg m-5">
+                <div className="card-body">
+                    <h5 className="card-title">{activity.title}</h5>
+                    <hr></hr>
+                    <p className="card-text">Description: {activity.description}</p>
+                    <p className="card-text">Code: {activity.code}</p>
+                    <p className="card-text">Date: {new Date(activity.date).toLocaleDateString() + ", " + new Date(activity.date).toLocaleTimeString()}</p>
+                </div>
+            </div>
+
+            {/* Display Feedback Instances */}
+            <div>
+                <h3>Feedback Instances:</h3>
+                {feedbackInstances.length <= 0 && <h4>You did not receive any feedback.</h4>}
+                {feedbackInstances.map((feedback, index) => (
+                    <div key={index}>
+                        <p>{returnEmoji(feedback.type)} - {new Date(feedback.date).toDateString()}, {new Date(feedback.date).toLocaleTimeString()}</p>
+                    </div>
+                ))}
             </div>
         </div>
-
-        {/* Display Feedback Instances */}
-        <div>
-            <h3>Feedback Instances:</h3>
-            {feedbackInstances.length <= 0 && <h4>You did not send any feedback.</h4>}
-            {feedbackInstances.map((feedback, index) => (
-                <div key={index}>
-                    <p>{returnEmoji(feedback.type)} - {new Date(feedback.date).toDateString()}, {new Date(feedback.date).toLocaleTimeString()}</p>
-                </div>
-            ))}
-        </div>
-    </div> 
     );
 };
 

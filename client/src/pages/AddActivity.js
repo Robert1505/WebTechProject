@@ -12,7 +12,6 @@ const AddActivity = () => {
     const [activities, setActivities] = useState([]);
     const [refresh, setRefresh] = useState(false);
 
-    // Get tomorrow's date in the format YYYY-MM-DD
     const today = new Date();
     today.setDate(today.getDate());
     const minDate = today.toISOString().split('T')[0]; // Minimum date in YYYY-MM-DD format
@@ -90,15 +89,14 @@ const AddActivity = () => {
         }
         if (currentDateUTC < activityDateUTC) {
             return 'Available';
-        } 
-         else {
+        }
+        else {
             return 'Expired';
         }
     };
 
-
     return (
-        <div className="container m-5">
+        <div className="m-5">
             <h2>Add Activity</h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
@@ -158,7 +156,7 @@ const AddActivity = () => {
 
             <div className="row my-5" style={{ height: "100%", maxHeight: "400px", overflow: "scroll" }}>
                 {activities.map((activity) => (
-                    <div className="col-md-4 mb-3" key={activity.id} onClick={()=> navigate("/activity/" + activity.id+"/feedback")}>
+                    <div className="col-3 mb-3" style={{ cursor: "pointer" }} key={activity.id} onClick={() => navigate("/activity/" + activity.id + "/feedback")}>
                         <div className="card shadow-lg">
                             <div className="card-body">
                                 <h5 className="card-title">{activity.title}</h5>

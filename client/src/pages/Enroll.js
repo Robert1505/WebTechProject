@@ -80,14 +80,14 @@ const Enroll = () => {
         }
         if (currentDateUTC < activityDateUTC) {
             return 'Available';
-        } 
-         else {
+        }
+        else {
             return 'Expired';
         }
     };
 
     return (
-        <div className="container m-5">
+        <div className="m-5">
             <h2>Enroll</h2>
             <div>
                 <div className="mb-3">
@@ -106,7 +106,7 @@ const Enroll = () => {
             <div className="row my-5" style={{ height: "100%", maxHeight: "400px", overflow: "scroll" }}>
                 <h2>All activities</h2>
                 {activities.map((activity) => (
-                    <div className="col-md-4 mb-3" key={activity.id}>
+                    <div className="col-md-3 mb-3" key={activity.id}>
                         <div className="card shadow-lg">
                             <div className="card-body">
                                 <h5 className="card-title">{activity.title}</h5>
@@ -124,9 +124,10 @@ const Enroll = () => {
             <div className="row my-5" style={{ height: "100%", maxHeight: "400px", overflow: "scroll" }}>
                 <h2>My enrollments</h2>
                 {myActivities.map((activity) => (
-                    <div className="col-md-4 mb-3" key={activity.id} onClick={()=>{
+                    <div className="col-md-3 mb-3" key={activity.id} style={{ cursor: "pointer" }} onClick={() => {
                         const status = setCurrentDateAvailability(activity)
-                        if(status === 'Happening right now') navigate("/activity/" + activity.id)}}>
+                        if (status === 'Happening right now') navigate("/activity/" + activity.id)
+                    }}>
                         <div className="card shadow-lg">
                             <div className="card-body">
                                 <h5 className="card-title">{activity.title}</h5>

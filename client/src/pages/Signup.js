@@ -13,7 +13,8 @@ const Signup = () => {
         setType(e.target.value);
     };
 
-    const insertUser = (values) => {
+    const insertUser = e => {
+        e.preventDefault();
         fetch('http://localhost:3001/users', {
             method: 'POST',
             headers: {
@@ -58,28 +59,28 @@ const Signup = () => {
                         <div className="card">
                             <div className="card-body">
                                 <h2 className="card-title">Sign up</h2>
-                                <form>
+                                <form onSubmit={insertUser}>
                                     <div className="form-group">
                                         <label>First name:</label>
                                         <input value={firstName} onChange={e => setFirstName(e.target.value)} required
-                                        type="text" name="firstName" className="form-control" />
+                                            type="text" name="firstName" className="form-control" />
                                     </div>
                                     <div className="form-group">
                                         <label>Last name:</label>
                                         <input value={lastName} onChange={e => setLastName(e.target.value)} required
-                                        type="text" name="lastName" className="form-control" />
+                                            type="text" name="lastName" className="form-control" />
                                     </div>
                                     <div className="form-group">
                                         <label>Username:</label>
                                         <input value={userName} onChange={e => setUserName(e.target.value)} required
-                                        type="email" name="numeUtilizator" className="form-control" />
+                                            type="text" name="numeUtilizator" className="form-control" />
                                     </div>
                                     <div className="form-group">
                                         <label>Password:</label>
-                                        <input value={password} onChange={e => setPassword(e.target.value)}  required
-                                        type="password" name="parola" className="form-control" />
+                                        <input value={password} onChange={e => setPassword(e.target.value)} required
+                                            type="password" name="parola" className="form-control" />
                                     </div>
-                                    <button type="button" onClick={insertUser} className="btn btn-primary">
+                                    <button type="submit" className="btn btn-primary mt-2">
                                         Sign up
                                     </button>
                                 </form>

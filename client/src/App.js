@@ -17,7 +17,7 @@ function App() {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const data = jwtDecode(token);
+        jwtDecode(token);
         setIsLoggedIn(true);
       } catch (e) {
         localStorage.removeItem('token');
@@ -31,7 +31,7 @@ function App() {
       <Routes>
         {/* Home */}
         <Route path="/" element={isLoggedIn ? <Home /> : <Login />} />
-        <Route path="/home" element={isLoggedIn ? <Home /> : <Login />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/activities" element={<AddActivity />} />
         <Route path="/activity/:id" element={<ActivityDisplay />} />
         <Route path="/activity/:id/feedback" element={<Feedback />} />

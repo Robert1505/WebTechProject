@@ -23,7 +23,8 @@ const Login = () => {
         }
     }, []);
 
-    const handleSubmit = async () => {
+    const handleSubmit = async e => {
+        e.preventDefault();
         const response = await fetch('http://localhost:3001/users/login', {
             method: 'POST',
             headers: {
@@ -33,9 +34,9 @@ const Login = () => {
                 userName, password
             })
         });
-        const data = await response.json()
-        console.log(data, response.ok)
+        const data = await response.json();
         if (response.ok) {
+            navigate("/home");
             if (data.message && data.token && data.user) {
                 setIsLoggedIn(true)
                 localStorage.setItem('token', data.token);
@@ -47,8 +48,6 @@ const Login = () => {
             console.error('' + data.error)
             alert(data.error)
         }
-
-
     };
 
     return (
@@ -59,7 +58,7 @@ const Login = () => {
                     <div className="card">
                         <div className="card-body">
                             <h2 className="card-title">Login</h2>
-                            <div>
+                            <form onSubmit={handleSubmit}>
                                 <div className="form-group">
                                     <label htmlFor="email">Username:</label>
                                     <input required value={userName} onChange={e => setUserName(e.target.value)} type="text" name="userName" className="form-control" />
@@ -69,9 +68,9 @@ const Login = () => {
                                     <input required value={password} onChange={e => setPassword(e.target.value)} type="password" name="password" className="form-control" />
                                 </div>
                                 <div className="form-group">
-                                    <button onClick={handleSubmit} type="button" className="btn btn-primary m-3">Login</button>
+                                    <button type="submit" className="btn btn-primary m-3">Login</button>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>

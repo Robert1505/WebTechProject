@@ -92,11 +92,11 @@ const Activity = sequelize.define('activity', {
 });
 
 User.hasMany(Feedback);
-User.hasMany(Activity, {foreignKey: 'teacher'});
-Activity.belongsToMany(User,{ through: 'student_enrollements'});// many to many
-User.belongsToMany(Activity, {through: 'student_enrollements'});
-Activity.belongsToMany(Feedback,{ through: 'activities_feedback'});
-Feedback.belongsToMany(Activity,{ through: 'activities_feedback'});
+User.hasMany(Activity, { foreignKey: 'teacher' });
+Activity.belongsToMany(User, { through: 'student_enrollements' });// many to many
+User.belongsToMany(Activity, { through: 'student_enrollements' });
+Activity.belongsToMany(Feedback, { through: 'activities_feedback' });
+Feedback.belongsToMany(Activity, { through: 'activities_feedback' });
 
 sequelize.authenticate()
     .then(() => {
