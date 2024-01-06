@@ -29,7 +29,13 @@ const Enroll = () => {
             });
             const data = await res.json()
             if (res.ok) {
-                setMyActivities(data)
+                let activities = [];
+                for (let d of data) {
+                    const statusOfActivity = setCurrentDateAvailability(d);
+                    let newAct = { ...d, status: statusOfActivity.text, color: statusOfActivity.color }
+                    activities.push(newAct);
+                }
+                setMyActivities(activities)
             }
         };
         if (token) {
@@ -76,13 +82,13 @@ const Enroll = () => {
         const currentDateUTC = currentDate.toISOString();
         const activityDateUTC = activityDate.toISOString();
         if (currentDateUTC > activityDateUTC && currentDateUTC < new Date(activityDate.getTime() + activityDurationMs).toISOString()) {
-            return 'Happening right now';
+            return {text: 'Happening right now', color: "green"};
         }
         if (currentDateUTC < activityDateUTC) {
-            return 'Available';
+            return {text: 'Available', color: "blue"};
         }
         else {
-            return 'Expired';
+            return {text: 'Expired', color: "red"};
         }
     };
 
@@ -111,7 +117,7 @@ const Enroll = () => {
                             <div className="card-body">
                                 <h5 className="card-title">{activity.title}</h5>
                                 <hr></hr>
-                                <p className="card-text">{setCurrentDateAvailability(activity)}</p>
+                                <p className="card-text">{setCurrentDateAvailability(activity).text}</p>
                                 <p className="card-text">Description: {activity.description}</p>
                                 <p className="card-text">Code: {activity.code}</p>
                                 <p className="card-text">Date: {new Date(activity.date).toLocaleDateString() + ", " + new Date(activity.date).toLocaleTimeString()}</p>
@@ -124,15 +130,14 @@ const Enroll = () => {
             <div className="row my-5" style={{ height: "100%", maxHeight: "400px", overflow: "scroll" }}>
                 <h2>My enrollments</h2>
                 {myActivities.map((activity) => (
-                    <div className="col-md-3 mb-3" key={activity.id} style={{ cursor: "pointer" }} onClick={() => {
-                        const status = setCurrentDateAvailability(activity)
-                        if (status === 'Happening right now') navigate("/activity/" + activity.id)
+                    <div className="col-md-3 mb-3" key={activity.id} style={{ cursor: activity.status === 'Happening right now' && "pointer" }} onClick={() => {
+                        if (activity.status === 'Happening right now') navigate("/activity/" + activity.id)
                     }}>
                         <div className="card shadow-lg">
                             <div className="card-body">
                                 <h5 className="card-title">{activity.title}</h5>
                                 <hr></hr>
-                                <p className="card-text">{setCurrentDateAvailability(activity)}</p>
+                                <p style={{color: activity.color}} className="card-text">{activity.status}</p>
                                 <p className="card-text">Description: {activity.description}</p>
                                 <p className="card-text">Code: {activity.code}</p>
                                 <p className="card-text">Date: {new Date(activity.date).toLocaleDateString() + ", " + new Date(activity.date).toLocaleTimeString()}</p>
