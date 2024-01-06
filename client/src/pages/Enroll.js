@@ -86,7 +86,6 @@ const Enroll = () => {
         }
     };
 
-
     return (
         <div className="container m-5">
             <h2>Enroll</h2>
@@ -110,9 +109,10 @@ const Enroll = () => {
                     <div className="col-md-4 mb-3" key={activity.id}>
                         <div className="card shadow-lg">
                             <div className="card-body">
-                                <h5 className="card-title">{activity.description}</h5>
+                                <h5 className="card-title">{activity.title}</h5>
                                 <hr></hr>
                                 <p className="card-text">{setCurrentDateAvailability(activity)}</p>
+                                <p className="card-text">Description: {activity.description}</p>
                                 <p className="card-text">Code: {activity.code}</p>
                                 <p className="card-text">Date: {new Date(activity.date).toLocaleDateString() + ", " + new Date(activity.date).toLocaleTimeString()}</p>
                             </div>
@@ -122,16 +122,17 @@ const Enroll = () => {
             </div>
 
             <div className="row my-5" style={{ height: "100%", maxHeight: "400px", overflow: "scroll" }}>
-                <h2>My current activities</h2>
+                <h2>My enrollments</h2>
                 {myActivities.map((activity) => (
                     <div className="col-md-4 mb-3" key={activity.id} onClick={()=>{
                         const status = setCurrentDateAvailability(activity)
                         if(status === 'Happening right now') navigate("/activity/" + activity.id)}}>
                         <div className="card shadow-lg">
                             <div className="card-body">
-                                <h5 className="card-title">{activity.description}</h5>
+                                <h5 className="card-title">{activity.title}</h5>
                                 <hr></hr>
                                 <p className="card-text">{setCurrentDateAvailability(activity)}</p>
+                                <p className="card-text">Description: {activity.description}</p>
                                 <p className="card-text">Code: {activity.code}</p>
                                 <p className="card-text">Date: {new Date(activity.date).toLocaleDateString() + ", " + new Date(activity.date).toLocaleTimeString()}</p>
                             </div>

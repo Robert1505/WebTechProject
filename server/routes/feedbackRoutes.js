@@ -7,7 +7,7 @@ const { User, Activity, Feedback } = require('../sequelize');
 // GET the list of feedbacks, only if you are professor.
 app.get('/all', authenticationMiddleware, async (request, response, next) => {
     try {
-        if (request.userType == 'teacher') {
+        if (request.type == 'teacher') {
             const activities = await Activity.findAll({ where: { creator: request.userId } });
             const activity = activities.shift();
             const feedbacks = await activity.getFeedbacks();
@@ -23,39 +23,36 @@ app.get('/all', authenticationMiddleware, async (request, response, next) => {
     }
 });
 
-// GET the list of feedbacks of an activity, only if you are professor.
+// GET the list of all feedbacks of an activity if you are teacher, or only yours if you are student
 app.get('/activity/:activityId', authenticationMiddleware, async (request, response, next) => {
     try {
-        if (request.userType == 'teacher') {
-            const activity = await Activity.findByPk(request.params.activityId);
+        let user = await User.findByPk(request.userId)
+        if(!user) response.status(404).json({ message: 'User not found!' })
+        const activity = await Activity.findByPk(request.params.activityId);
+        if(!activity) response.status(404).json({ message: 'Activity not found!' })
+
+        if(user.type === 'teacher'){
             const feedbacks = await activity.getFeedbacks();
-            if (feedbacks.length > 0) {
-                response.json(feedbacks);
+            response.status(200).json(feedbacks);
+        } else {
+            user = await User.findByPk(request.userId, {
+                include: [{
+                    model: Activity,
+                    where: { id: activity.id },
+                    include: [{
+                        model: Feedback,
+                        through: 'activities_feedback'
+                    }]
+                }]
+            });
+            if (user && user.activities && user.activities.length > 0) {
+                const activity = user.activities[0];
+                response.status(200).json(activity.feedbacks);
             } else {
-                response.sendStatus(204);
+                console.log("User or activity not found.");
             }
         }
-        else response.status(403).json({ message: 'Your are not the professor!' })
-    } catch (error) {
-        next(error);
-    }
-});
-
-// GET the list of feedbacks sent by you if you are a student.
-app.get('', authenticationMiddleware, async (request, response, next) => {
-    try {
-        if (request.userType == 'student') {
-            const user = await User.findByPk(request.userId)
-            if (user) {
-                const feedbacks = await user.getFeedbacks();
-                if (feedbacks.length > 0) {
-                    response.json(feedbacks);
-                } else {
-                    response.sendStatus(204);
-                }
-            } else response.status(404).json({ message: 'User not found!' })
-        }
-        else response.status(403).json({ message: 'Your are not the user!' })
+        
     } catch (error) {
         next(error);
     }
@@ -64,7 +61,7 @@ app.get('', authenticationMiddleware, async (request, response, next) => {
 // GET a feedback by id.
 app.get('/:feedbackId', authenticationMiddleware, async (request, response, next) => {
     try {
-        if (request.userType == 'teacher') {
+        if (request.type == 'teacher') {
             const feedback = await Feedback.findByPk(request.params.feedbackId);
             if (feedback) {
                 response.json(feedback);
@@ -87,8 +84,8 @@ app.post('/users/:userId/activities/:activityId', authenticationMiddleware, asyn
             if (activity) {
                 const users = await activity.getUsers();
                 for (let u of users) {
-                    if (u.usertypeId == 1 && u.id == req.params.userId) {
-                        if (req.body.description && req.body.type && req.body.date) {
+                    if (u.type == 'student' && u.id == req.params.userId) {
+                        if (req.body.type && req.body.date) {
                             const feedback = await Feedback.create(req.body);
                             activity.addFeedback(feedback);
                             await activity.save();
@@ -102,7 +99,7 @@ app.post('/users/:userId/activities/:activityId', authenticationMiddleware, asyn
                 response.status(404).json({ message: 'Student is not enrolled at such activity!' });
             } else response.status(404).json({ message: 'Student is not enrolled at such activity!' });
         } else {
-            response.status(404).json({ message: 'User not found!' + user1.usertypeId + req.params.userId });
+            response.status(404).json({ message: 'User not found!' + user1.typeId + req.params.userId });
         }
     } catch (error) {
         next(error);
@@ -112,10 +109,10 @@ app.post('/users/:userId/activities/:activityId', authenticationMiddleware, asyn
 // PUT to update a feedback.
 app.put('/:feedbackId', authenticationMiddleware, async (request, response, next) => {
     try {
-        if (request.userType == 'student') {
+        if (request.type == 'student') {
             const feedback = await Feedback.findByPk(request.params.feedbackId);
             if (feedback) {
-                if (request.body.description && request.body.type && request.body.date) {
+                if (request.body.type && request.body.date) {
                     await feedback.update(request.body);
                 } else response.status(400).json({ message: 'Malformed request!' });
             } else {

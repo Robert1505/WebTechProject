@@ -26,7 +26,7 @@ app.get('/users/:userId', authenticationMiddleware, async (req, response, next) 
             if (user) {
                 if (user.type == 'teacher') {
                     const activities = await user.getActivities();
-                      response.status(200).json(activities);
+                    response.status(200).json(activities);
                 } else response.status(400).json({ message: 'User must be a professor!' });
             } else {
                 response.status(404).json({ message: 'User not found!' });
@@ -62,7 +62,7 @@ app.get('/users/:userId/enrollment', authenticationMiddleware, async (req, respo
                 response.status(404).json({ message: 'User not found!' });
             }
         }
-        else response.status(403).json({ message: 'Your are not the student!'})
+        else response.status(403).json({ message: 'Your are not the student!' })
     } catch (error) {
         next(error);
     }
@@ -70,17 +70,29 @@ app.get('/users/:userId/enrollment', authenticationMiddleware, async (req, respo
 // GET an activity by id.
 app.get('/:activityId', authenticationMiddleware, async (request, response, next) => {
     try {
-        const activity = await Activity.findOne({
-            where: {id: request.params.activityId},
-            include: [{
-                model: User,
-                where: { id: request.userId }
-            }]
-        })
-        if (activity) {
-            response.status(200).json(activity);
+        const user = await User.findByPk(request.userId);
+        if (user.type == 'teacher') {
+            const activity = await Activity.findOne({
+                where: { id: request.params.activityId, teacher: user.id }
+            })
+            if (activity) {
+                response.status(200).json(activity);
+            } else {
+                response.sendStatus(404);
+            }
         } else {
-            response.sendStatus(404);
+            const activity = await Activity.findOne({
+                where: { id: request.params.activityId },
+                include: [{
+                    model: User,
+                    where: { id: request.userId }
+                }]
+            })
+            if (activity) {
+                response.status(200).json(activity);
+            } else {
+                response.sendStatus(404);
+            }
         }
     } catch (error) {
         next(error);
@@ -95,7 +107,7 @@ app.post('/:userId', authenticationMiddleware, async (req, response, next) => {
             const user = await User.findByPk(req.params.userId);
             if (user) {
                 if (user.type == 'teacher') {
-                    if (req.body.description &&req.body.title && req.body.code && req.body.date) {
+                    if (req.body.description && req.body.title && req.body.code && req.body.date) {
                         const par = {
                             description: req.body.description,
                             title: req.body.title,
@@ -125,7 +137,7 @@ app.put('/:activityId', authenticationMiddleware, async (request, response, next
         if (request.type == 'teacher') {
             const activity = await Activity.findByPk(request.params.activityId);
             if (activity && activity.teacher == request.userId) {
-                if (request.body.description && req.body.title &&request.body.code && request.body.date) {
+                if (request.body.description && req.body.title && request.body.code && request.body.date) {
                     const par = {
                         description: req.body.description,
                         title: req.body.title,

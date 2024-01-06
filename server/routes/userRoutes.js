@@ -153,6 +153,10 @@ app.post('/:userId/enroll', async (request, response, next) => {
         }}});
         if (user && activity) {
             if (user.type === 'student') {
+                const isEnrolled = await activity.hasUser(user);
+                if (isEnrolled) {
+                    return response.status(400).json({ message: "User is already enrolled in this activity." });
+                }
                 activity.addUser(user);
                 await activity.save();
                 response.status(201).json({ message: 'Enrollement is done!' });

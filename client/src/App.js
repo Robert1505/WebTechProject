@@ -9,6 +9,7 @@ import AppBar from './pages/AppBar';
 import AddActivity from './pages/AddActivity';
 import Enroll from './pages/Enroll';
 import ActivityDisplay from './pages/ActivityDisplay';
+import Feedback from './pages/Feedback';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState();
@@ -33,6 +34,7 @@ function App() {
         <Route path="/home" element={isLoggedIn ? <Home /> : <Login />} />
         <Route path="/activities" element={<AddActivity />} />
         <Route path="/activity/:id" element={<ActivityDisplay />} />
+        <Route path="/activity/:id/feedback" element={<Feedback />} />
         <Route path="/enroll" element={<Enroll />} />
 
         {/* Auth */}

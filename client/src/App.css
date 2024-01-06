@@ -74,5 +74,5 @@
   align-items: center;
   border: none; /* Remove button border */
   background: none; /* Remove button background */
-  padding: 0; /* Remove button padding */
+  padding: 10px; /* Remove button padding */
 }

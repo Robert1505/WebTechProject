@@ -13,9 +13,9 @@ const AddActivity = () => {
     const [refresh, setRefresh] = useState(false);
 
     // Get tomorrow's date in the format YYYY-MM-DD
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const minDate = tomorrow.toISOString().split('T')[0]; // Minimum date in YYYY-MM-DD format
+    const today = new Date();
+    today.setDate(today.getDate());
+    const minDate = today.toISOString().split('T')[0]; // Minimum date in YYYY-MM-DD format
 
     const navigate = useNavigate();
 
@@ -37,7 +37,6 @@ const AddActivity = () => {
         if (token) {
             try {
                 const data = jwtDecode(token);
-                console.log(data)
                 setUser(data.user);
                 if (data.type != "teacher") navigate("/home");
                 fetchActivities(data.user.id);
@@ -52,6 +51,10 @@ const AddActivity = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        if (new Date(date + "T" + time) < today) {
+            alert("The activity's time is cannot be before the current time.");
+            return;
+        }
         fetch('http://localhost:3001/activities/' + user.id, {
             method: 'POST',
             headers: {
@@ -75,30 +78,24 @@ const AddActivity = () => {
             });
     };
 
-    const generateClassTimes = () => {
-        const classTimes = [];
-        let currentTime = new Date();
-        currentTime.setHours(7, 30, 0, 0); // Set initial time to 7:30 AM
-
-        const maxTime = new Date();
-        maxTime.setHours(19, 30, 0, 0); // Set maximum time to 9:00 PM
-
-        while (currentTime <= maxTime) {
-            const timeString = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            classTimes.push(timeString);
-
-            // Add an hour and a half for the next class
-            currentTime = new Date(currentTime.getTime() + 90 * 60000); // 90 minutes in milliseconds
-        }
-
-        return classTimes;
-    };
-
     const setCurrentDateAvailability = (activity) => {
         const currentDate = new Date();
         const activityDate = new Date(activity.date);
-        return currentDate < activityDate;
+        const activityDurationMs = 90 * 60 * 1000; // Activity duration in milliseconds (1h 30min)
+
+        const currentDateUTC = currentDate.toISOString();
+        const activityDateUTC = activityDate.toISOString();
+        if (currentDateUTC > activityDateUTC && currentDateUTC < new Date(activityDate.getTime() + activityDurationMs).toISOString()) {
+            return 'Happening right now';
+        }
+        if (currentDateUTC < activityDateUTC) {
+            return 'Available';
+        } 
+         else {
+            return 'Expired';
+        }
     };
+
 
     return (
         <div className="container m-5">
@@ -152,7 +149,6 @@ const AddActivity = () => {
                         type="time" className="form-control" onChange={e => setTime(e.target.value)} id="time" value={time} required
                         min="07:00"
                         max="19:00"
-                        step="1800"
                         pattern="^(0[7-9]|1[0-8]):[0-5][0-9]$"
                         title="Please enter a valid time between 07:00 and 19:00"
                     />
@@ -162,12 +158,13 @@ const AddActivity = () => {
 
             <div className="row my-5" style={{ height: "100%", maxHeight: "400px", overflow: "scroll" }}>
                 {activities.map((activity) => (
-                    <div className="col-md-4 mb-3" key={activity.id}>
+                    <div className="col-md-4 mb-3" key={activity.id} onClick={()=> navigate("/activity/" + activity.id+"/feedback")}>
                         <div className="card shadow-lg">
                             <div className="card-body">
-                                <h5 className="card-title">{activity.description}</h5>
+                                <h5 className="card-title">{activity.title}</h5>
                                 <hr></hr>
-                                <p className="card-text">{setCurrentDateAvailability(activity) ? 'Available' : 'Not available'}</p>
+                                <p className="card-text">{setCurrentDateAvailability(activity)}</p>
+                                <p className="card-text">Description: {activity.description}</p>
                                 <p className="card-text">Code: {activity.code}</p>
                                 <p className="card-text">Date: {new Date(activity.date).toLocaleDateString() + ", " + new Date(activity.date).toLocaleTimeString()}</p>
                             </div>
