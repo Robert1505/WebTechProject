@@ -4,6 +4,7 @@ const app = express.Router();
 const { encodeToken, authenticationMiddleware } = require('./loginMiddleware');
 
 const { User, Activity } = require('../sequelize');
+const { Op } = require('sequelize');
 
 app.post('/login', async (req, res, next) => {
     const params = req.body.userName;
@@ -142,10 +143,14 @@ app.put('/:userId', async (req, response, next) => {
 });
 
 // POST a new user into an activity -> enroll.
-app.post('/:userId/activities/:activityId/enroll', async (request, response, next) => {
+app.post('/:userId/enroll', async (request, response, next) => {
     try {
+        const code = request.body.code;
+        if(!code) return response.status(404).json({message : "No code provided."});
         const user = await User.findByPk(request.params.userId);
-        const activity = await Activity.findByPk(request.params.activityId);
+        const activity = await Activity.findOne({where: {code, date: {
+            [Op.gt]: new Date() // Find activities with datetime greater than the current moment
+        }}});
         if (user && activity) {
             if (user.type === 'student') {
                 activity.addUser(user);
@@ -153,7 +158,7 @@ app.post('/:userId/activities/:activityId/enroll', async (request, response, nex
                 response.status(201).json({ message: 'Enrollement is done!' });
             } else response.status(400).json({ message: 'Only a student can be enrolled!' });
         } else {
-            response.sendStatus(404);
+            return response.status(404).json({message : "Activity does not exist or it is expired."});
         }
     } catch (error) {
         next(error);

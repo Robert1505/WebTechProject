@@ -50,14 +50,8 @@ const Feedback = sequelize.define('feedback', {
         autoIncrement: true,
         primaryKey: true
     },
-    description: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        notEmpty: true
-    },
     type: {
         type: DataTypes.STRING,
-        isIn: ['EXCELENT', 'GOOD', 'AVERAGE', 'POOR'],
         allowNull: false,
         notEmpty: true
     },

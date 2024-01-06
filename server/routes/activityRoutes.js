@@ -9,7 +9,7 @@ app.get('/', async (request, response, next) => {
     try {
         const activities = await Activity.findAll();
         if (activities.length > 0) {
-            response.json(activities);
+            response.status(200).json(activities);
         } else {
             response.sendStatus(204);
         }
@@ -53,7 +53,7 @@ app.get('/users/:userId/enrollment', authenticationMiddleware, async (req, respo
                         }]
                     })
                     if (activities.length > 0) {
-                        response.json(activities);
+                        response.status(200).json(activities);
                     } else {
                         response.sendStatus(204);
                     }
@@ -68,11 +68,17 @@ app.get('/users/:userId/enrollment', authenticationMiddleware, async (req, respo
     }
 });
 // GET an activity by id.
-app.get('/:activityId', async (request, response, next) => {
+app.get('/:activityId', authenticationMiddleware, async (request, response, next) => {
     try {
-        const activity = await Activity.findByPk(request.params.activityId);
+        const activity = await Activity.findOne({
+            where: {id: request.params.activityId},
+            include: [{
+                model: User,
+                where: { id: request.userId }
+            }]
+        })
         if (activity) {
-            response.json(activity);
+            response.status(200).json(activity);
         } else {
             response.sendStatus(404);
         }

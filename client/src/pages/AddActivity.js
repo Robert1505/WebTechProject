@@ -52,8 +52,6 @@ const AddActivity = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // let hour = parseInt(time.split(":")[0]) + 2
-        // const newTime = hour + ":" + time.split(":")[1]
         fetch('http://localhost:3001/activities/' + user.id, {
             method: 'POST',
             headers: {
@@ -150,13 +148,14 @@ const AddActivity = () => {
                 </div>
                 <div className="mb-3">
                     <label htmlFor="time" className="form-label">Time</label>
-                    <select className="form-control" onChange={e => setTime(e.target.value)} id="time" value={time} required>
-                        {generateClassTimes().map(hour => {
-                            return (
-                                <option key={hour} value={hour}>{hour}</option>
-                            )
-                        })}
-                    </select>
+                    <input
+                        type="time" className="form-control" onChange={e => setTime(e.target.value)} id="time" value={time} required
+                        min="07:00"
+                        max="19:00"
+                        step="1800"
+                        pattern="^(0[7-9]|1[0-8]):[0-5][0-9]$"
+                        title="Please enter a valid time between 07:00 and 19:00"
+                    />
                 </div>
                 <button type="submit" className="btn btn-primary">Add Activity</button>
             </form>
