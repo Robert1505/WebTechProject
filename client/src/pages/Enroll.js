@@ -27,8 +27,8 @@ const Enroll = () => {
                     'Authorization': localStorage.getItem("token")
                 },
             });
-            const data = await res.json()
             if (res.ok) {
+                const data = await res.json()
                 let activities = [];
                 for (let d of data) {
                     const statusOfActivity = setCurrentDateAvailability(d);

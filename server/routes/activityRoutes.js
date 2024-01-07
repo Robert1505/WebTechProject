@@ -52,11 +52,7 @@ app.get('/users/:userId/enrollment', authenticationMiddleware, async (req, respo
                             where: { id: req.params.userId }
                         }]
                     })
-                    if (activities.length > 0) {
-                        response.status(200).json(activities);
-                    } else {
-                        response.sendStatus(204);
-                    }
+                    response.status(200).json(activities);
                 } else response.status(400).json({ message: 'User must be a student!' });
             } else {
                 response.status(404).json({ message: 'User not found!' });

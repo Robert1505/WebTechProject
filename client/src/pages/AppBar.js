@@ -12,6 +12,7 @@ const AppBar = () => {
 
   const onLogOut = () => {
     localStorage.removeItem('token');
+    setRole('');
     setIsLoggedIn(false);
     navigate('/login');
   };
@@ -37,7 +38,7 @@ const AppBar = () => {
   return (
     <Navbar bg="primary" expand="lg" variant="dark">
       <Navbar.Brand style={{ cursor: "pointer" }} className="mx-3" onClick={() => navigate("/")}>
-        My university - {role.toLocaleUpperCase()}
+        My university {role.toLocaleUpperCase()}
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="navbarNav" />
       <Navbar.Collapse id="navbarNav" className='mx-3'>
