@@ -146,7 +146,7 @@ const AddActivity = () => {
                     <input
                         type="time" className="form-control" onChange={e => setTime(e.target.value)} id="time" value={time} required
                         min="07:00"
-                        max="19:00"
+                        max="20:00"
                         pattern="^(0[7-9]|1[0-8]):[0-5][0-9]$"
                         title="Please enter a valid time between 07:00 and 19:00"
                     />

@@ -22,7 +22,8 @@ app.get('/activity/:activityId', authenticationMiddleware, async (request, respo
                     where: { id: activity.id },
                     include: [{
                         model: Feedback,
-                        through: 'activities_feedback'
+                        through: 'activities_feedback',
+                        where: { userId: user.id },
                     }]
                 }]
             });

@@ -4,7 +4,7 @@ const app = express.Router();
 const { encodeToken, authenticationMiddleware } = require('./loginMiddleware');
 
 const { User, Activity } = require('../sequelize');
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 
 app.post('/login', async (req, res, next) => {
     const params = req.body.userName;
@@ -67,7 +67,7 @@ app.post('/:userId/enroll', async (request, response, next) => {
         const activity = await Activity.findOne({
             where: {
                 code, date: {
-                    [Op.gt]: new Date() // Find activities with datetime greater than the current moment
+                    [Op.gt]: new Date(new Date() - (90 * 60 * 1000)) // Find activities that have not ended yet
                 }
             }
         });
